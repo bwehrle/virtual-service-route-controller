@@ -103,12 +103,38 @@ spec:
 ```
 
 ## Requirement
-- [Istio](https://istio.io/)
+1. Install [Istio](https://istio.io/)
 
-## Install
-1. Deploy Istio to your kubernetes cluster. See [Setup](https://istio.io/latest/docs/setup/) more details.
-2. Deploy VirtualServiceRouteController and CRDs to your kubernetes cluster.
+2. Install dependencies: controller-gen & kustomize 
+```bash
+go install sigs.k8s.io/controller-tools/cmd/controller-gen@v0.4.1
+brew install kustomize
+```
+
+## Deploy to cluster
+1. Build operator
 
 ```bash
-TBD
+make
+```
+
+2. Deploy VirtualServiceRouteController operator to your kubernetes cluster.
+
+```bash
+make install
+make deploy
+```
+
+## Running locally
+This can be done after
+
+1. Delete deployment of the operator
+```bash
+NS=vsr-controller-system
+kubectl delete deployments $(kubectl get deployments -o=jsonpath="{.items[*].metadata.name} -n $N" -n $NS)
+```
+
+2. Run in shell
+```bash
+make run
 ```

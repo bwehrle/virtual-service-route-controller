@@ -55,12 +55,14 @@ generate: controller-gen
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 
 # Build the docker image
-docker-build: test
+docker-build:
 	docker build . -t ${IMG}
 
 # Push the docker image
 docker-push:
-	docker push ${IMG}
+#	docker image tag ${IMG}:latest bwehrle/${IMG}:latest
+	docker tag ${IMG} bwehrle/virtual-service-controller
+	docker push bwehrle/virtual-service-controller
 
 # find or download controller-gen
 # download controller-gen if necessary

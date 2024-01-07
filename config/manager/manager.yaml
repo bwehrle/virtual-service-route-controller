@@ -27,13 +27,13 @@ spec:
         - /manager
         args:
         - --enable-leader-election
-        image: controller:latest
+        image: bwehrle/virtual-service-controller:latest
         name: manager
         resources:
           limits:
             cpu: 100m
-            memory: 30Mi
+            memory: 200Mi
           requests:
             cpu: 100m
-            memory: 20Mi
+            memory: 200Mi
       terminationGracePeriodSeconds: 10

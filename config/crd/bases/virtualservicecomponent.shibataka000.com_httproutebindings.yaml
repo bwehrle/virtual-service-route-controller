@@ -68,6 +68,13 @@ spec:
                           properties:
                             host:
                               type: string
+                            port:
+                              properties:
+                                number:
+                                  description: Valid port number
+                                  format: int32
+                                  type: integer
+                              type: object
                             subset:
                               type: string
                           type: object

@@ -20,6 +20,8 @@ import (
 	"context"
 	"fmt"
 	"reflect"
+	"slices"
+	"strings"
 
 	"github.com/go-logr/logr"
 	corev1 "k8s.io/api/core/v1"
@@ -101,11 +103,18 @@ func (r *VirtualServiceBaseReconciler) Reconcile(ctx context.Context, req ctrl.R
 			return err
 		}
 		httpRoutes := []*networkingv1beta1.HTTPRoute{}
+
+		// Process HTTPRoutes by their name
+		slices.SortFunc(httpRouteBindings.Items, func(a, b virtualservicecomponentv1alpha1.HTTPRouteBinding) int {
+			return strings.Compare(a.Name, b.Name)
+		})
+
 		for _, httpRouteBinding := range httpRouteBindings.Items {
 			if httpRouteBinding.Spec.VirtualServiceBaseRef.IsReference(&virtualServiceBase) {
 				httpRoutes = append(httpRoutes, httpRouteBinding.Spec.HTTPRoute.DeepCopy().IstioAPI())
 			}
 		}
+
 		if len(httpRoutes) == 0 {
 			err := fmt.Errorf("http, tcp or tls must be provided in virtual service")
 			log.Error(err, "http, tcp or tls must be provided in virtual service")

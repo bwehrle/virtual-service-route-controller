@@ -91,14 +91,26 @@ func (a *HTTPRouteDestination) IstioAPI() *networkingv1beta1.HTTPRouteDestinatio
 
 // Destination indicates the network addressable service to which the request/connection will be sent after processing a routing rule.
 type Destination struct {
-	Host   string `json:"host,omitempty"`
-	Subset string `json:"subset,omitempty"`
+	Host   string        `json:"host,omitempty"`
+	Subset string        `json:"subset,omitempty"`
+	Port   *PortSelector `json:"port,omitempty"`
+}
+
+type PortSelector struct {
+	// Valid port number
+	Number uint32 `json:"number,omitempty"`
 }
 
 // IstioAPI convert to Destination struct defined in istio.io/api
 func (a *Destination) IstioAPI() *networkingv1beta1.Destination {
-	return &networkingv1beta1.Destination{
+	dest := &networkingv1beta1.Destination{
 		Host:   a.Host,
 		Subset: a.Subset,
 	}
+	if a.Port != nil {
+		dest.Port = &networkingv1beta1.PortSelector{
+			Number: a.Port.Number,
+		}
+	}
+	return dest
 }
